@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ language == 'es' and 'Todos los Leads' or 'All Leads' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .lead-card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+        .lead-source {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        .lead-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .lead-detail {
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+        .actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .actions a {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+        .filters {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .filter-group {
+            margin-bottom: 10px;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .error {
+            color: #e74c3c;
+            font-style: italic;
+        }
+        .no-leads {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .language-toggle a {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .language-toggle a.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .website-link {
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .website-link a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 7px;
+            font-size: 11px;
+            background-color: #e67e22;
+            color: white;
+            border-radius: 10px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Language toggle -->
+    <div class="language-toggle">
+        <a href="/set-language/en" class="{{ language == 'en' and 'active' or '' }}">English</a>
+        <a href="/set-language/es" class="{{ language == 'es' and 'active' or '' }}">Español</a>
+    </div>
+
+    <div class="container">
+        <h1>{{ language == 'es' and 'Todos los Leads Recopilados' or 'All Scraped Leads' }}</h1>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="country-filter">{{ language == 'es' and 'Filtrar por País:' or 'Filter by Country:' }}</label>
+                <select id="country-filter" onchange="filterLeads()">
+                    <option value="">{{ language == 'es' and 'Todos los Países' or 'All Countries' }}</option>
+                    <!-- Countries will be dynamically added with JavaScript -->
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="source-filter">{{ language == 'es' and 'Filtrar por Fuente:' or 'Filter by Source:' }}</label>
+                <select id="source-filter" onchange="filterLeads()">
+                    <option value="">{{ language == 'es' and 'Todas las Fuentes' or 'All Sources' }}</option>
+                    <!-- Sources will be dynamically added with JavaScript -->
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="search-filter">{{ language == 'es' and 'Buscar:' or 'Search:' }}</label>
+                <input type="text" id="search-filter" onkeyup="filterLeads()" placeholder="{{ language == 'es' and 'Buscar por nombre, teléfono, dirección...' or 'Search by name, phone, address...' }}">
+            </div>
+        </div>
+
+        <div id="leads-container">
+            {% if leads %}
+                {% for lead in leads %}
+                    <div class="lead-card" 
+                         data-country="{{ lead.country }}" 
+                         data-source="{{ lead.source }}">
+                        {% if lead.error %}
+                            <p class="error">{{ language == 'es' and 'Error:' or 'Error:' }} {{ lead.error }}</p>
+                        {% else %}
+                            <div class="lead-source">
+                                {{ language == 'es' and 'Fuente:' or 'Source:' }} {{ lead.source }} - {{ lead.country }}
+                                {% if lead.source == "Google Maps" %}
+                                    <span class="badge">Maps</span>
+                                {% endif %}
+                            </div>
+
+                            {% if lead.name %}
+                                <div class="lead-name">{{ lead.name }}</div>
+                            {% endif %}
+
+                            {% if lead.search_query %}
+                                <div class="search-query">{{ language == 'es' and 'Encontrado usando:' or 'Found using:' }} "{{ lead.search_query }}"</div>
+                            {% endif %}
+
+                            {% if lead.description %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Descripción:' or 'Description:' }}</strong> {{ lead.description }}</div>
+                            {% endif %}
+
+                            {% if lead.category %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Categoría:' or 'Category:' }}</strong> {{ lead.category }}</div>
+                            {% endif %}
+
+                            {% if lead.address %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Dirección:' or 'Address:' }}</strong> {{ lead.address }}</div>
+                            {% endif %}
+
+                            {% if lead.phone %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Teléfono:' or 'Phone:' }}</strong> {{ lead.phone }}</div>
+                            {% endif %}
+
+                            {% if lead.website and lead.website != "Not found" %}
+                                <div class="lead-detail">
+                                    <strong>{{ language == 'es' and 'Sitio Web:' or 'Website:' }}</strong> 
+                                    <div class="website-link">
+                                        <a href="{{ lead.website }}" target="_blank">{{ lead.website }}</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if lead.link %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Enlace:' or 'Link:' }}</strong> <a href="{{ lead.link }}" target="_blank">{{ lead.link }}</a></div>
+                            {% endif %}
+
+                            {% if lead.url %}
+                                <div class="lead-detail"><strong>URL:</strong> <a href="{{ lead.url }}" target="_blank">{{ lead.url }}</a></div>
+                            {% endif %}
+
+                            {% if lead.possible_business_names %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Posibles Nombres de Negocios:' or 'Possible Business Names:' }}</strong></div>
+                                <ul>
+                                    {% for name in lead.possible_business_names %}
+                                        <li>{{ name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% if lead.possible_phones %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Posibles Números de Teléfono:' or 'Possible Phone Numbers:' }}</strong></div>
+                                <ul>
+                                    {% for phone in lead.possible_phones %}
+                                        <li>{{ phone }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% if lead.possible_emails %}
+                                <div class="lead-detail"><strong>{{ language == 'es' and 'Posibles Correos Electrónicos:' or 'Possible Emails:' }}</strong></div>
+                                <ul>
+                                    {% for email in lead.possible_emails %}
+                                        <li>{{ email }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-leads">
+                    <p>{{ language == 'es' and 'No se han recopilado leads todavía.' or 'No leads have been scraped yet.' }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="actions">
+            <a href="/">{{ language == 'es' and 'Volver al Inicio' or 'Back to Home' }}</a>
+            <a href="/export-leads" target="_blank">{{ language == 'es' and 'Exportar Leads (JSON)' or 'Export Leads (JSON)' }}</a>
+            <a href="/clear-leads" onclick="return confirm('{{ language == 'es' and '¿Estás seguro de que quieres borrar todos los leads?' or 'Are you sure you want to clear all leads?' }}')">{{ language == 'es' and 'Borrar Todos los Leads' or 'Clear All Leads' }}</a>
+        </div>
+    </div>
+
+    <script>
+        // Populate filters on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const leadCards = document.querySelectorAll('.lead-card');
+            const countries = new Set();
+            const sources = new Set();
+
+            leadCards.forEach(card => {
+                const country = card.getAttribute('data-country');
+                const source = card.getAttribute('data-source');
+
+                if (country) countries.add(country);
+                if (source) sources.add(source);
+            });
+
+            // Add country options
+            const countryFilter = document.getElementById('country-filter');
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.textContent = country;
+                countryFilter.appendChild(option);
+            });
+
+            // Add source options
+            const sourceFilter = document.getElementById('source-filter');
+            sources.forEach(source => {
+                const option = document.createElement('option');
+                option.value = source;
+                option.textContent = source;
+                sourceFilter.appendChild(option);
+            });
+        });
+
+        // Filter leads based on selected filters
+        function filterLeads() {
+            const countryFilter = document.getElementById('country-filter').value;
+            const sourceFilter = document.getElementById('source-filter').value;
+            const searchFilter = document.getElementById('search-filter').value.toLowerCase();
+
+            const leadCards = document.querySelectorAll('.lead-card');
+
+            leadCards.forEach(card => {
+                const country = card.getAttribute('data-country');
+                const source = card.getAttribute('data-source');
+                const cardText = card.textContent.toLowerCase();
+
+                const countryMatch = !countryFilter || country === countryFilter;
+                const sourceMatch = !sourceFilter || source === sourceFilter;
+                const searchMatch = !searchFilter || cardText.includes(searchFilter);
+
+                if (countryMatch && sourceMatch && searchMatch) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

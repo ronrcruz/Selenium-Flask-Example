@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ language == 'es' and 'Generador de Leads para Mayoristas de Dispositivos Móviles' or 'Mobile Device Wholesale Lead Generator' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .actions a {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .description {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #3498db;
+        }
+        .highlight-box {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #3498db;
+            text-align: center;
+        }
+        .highlight-box a {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .language-toggle a {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .language-toggle a.active {
+            background-color: #3498db;
+            color: white;
+        }
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            z-index: 1000;
+            text-align: center;
+            padding-top: 150px;
+        }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 30px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            font-size: 24px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .loading-subtext {
+            font-size: 16px;
+            color: #7f8c8d;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+        <div class="loading-text">{{ language == 'es' and 'Buscando Leads de Negocio...' or 'Searching for Business Leads...' }}</div>
+        <div class="loading-subtext">{{ language == 'es' and 'Esto puede tardar hasta 2 minutos. Por favor, no cierres esta ventana.' or 'This may take up to 2 minutes. Please do not close this window.' }}</div>
+    </div>
+
+    <!-- Language toggle -->
+    <div class="language-toggle">
+        <a href="/set-language/en" class="{{ language == 'en' and 'active' or '' }}">English</a>
+        <a href="/set-language/es" class="{{ language == 'es' and 'active' or '' }}">Español</a>
+    </div>
+
+    <div class="container">
+        <h1>{{ language == 'es' and 'Generador de Leads para Mayoristas de Dispositivos Móviles' or 'Mobile Device Wholesale Lead Generator' }}</h1>
+
+        <div class="description">
+            {% if language == 'es' %}
+            <p>Esta herramienta te ayuda a encontrar leads de negocios de dispositivos móviles en América Latina. Selecciona un país, elige un método de búsqueda y haz clic en "Generar Leads" para comenzar.</p>
+            <p><strong>Nota:</strong> Esta herramienta respeta los términos de servicio de los sitios web y debe utilizarse solo para prospección comercial legítima.</p>
+            {% else %}
+            <p>This tool helps you find mobile device business leads in Latin America. Select a country, choose a scraping method, and click "Generate Leads" to start.</p>
+            <p><strong>Note:</strong> This tool respects website terms of service and should only be used for legitimate business prospecting.</p>
+            {% endif %}
+        </div>
+
+        <div class="highlight-box">
+            {% if language == 'es' %}
+            <h3>¿Buscas los mejores resultados?</h3>
+            <p>Prueba nuestro rastreador enfocado en Google Maps para obtener leads de mayoristas de dispositivos móviles de alta calidad.</p>
+            <a href="/google-maps-focus">Cambiar al Modo Enfocado de Google Maps</a>
+            {% else %}
+            <h3>Looking for the best results?</h3>
+            <p>Try our focused Google Maps scraper for high-quality mobile device wholesale leads.</p>
+            <a href="/google-maps-focus">Switch to Google Maps Focus Mode</a>
+            {% endif %}
+        </div>
+
+        <form id="scrapeForm" action="/scrape" method="post">
+            <div class="form-group">
+                <label for="country">{{ language == 'es' and 'País Objetivo:' or 'Target Country:' }}</label>
+                <select name="country" id="country" required>
+                    {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="scrape_type">{{ language == 'es' and 'Método de Búsqueda:' or 'Scraping Method:' }}</label>
+                <select name="scrape_type" id="scrape_type" onchange="toggleCustomUrl()">
+                    <option value="general">{{ language == 'es' and 'General (Múltiples Fuentes)' or 'General (Multiple Sources)' }}</option>
+                    <option value="country_specific">{{ language == 'es' and 'Fuentes Específicas del País' or 'Country-Specific Sources' }}</option>
+                    <option value="custom_url">{{ language == 'es' and 'URL Personalizada' or 'Custom URL' }}</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="custom_url_group" style="display: none;">
+                <label for="custom_url">{{ language == 'es' and 'URL Personalizada:' or 'Custom URL:' }}</label>
+                <input type="url" name="custom_url" id="custom_url" placeholder="https://example.com">
+            </div>
+
+            <button type="submit" id="submitButton">{{ language == 'es' and 'Generar Leads' or 'Generate Leads' }}</button>
+        </form>
+
+        <div class="actions">
+            <a href="/view-leads">{{ language == 'es' and 'Ver Todos los Leads' or 'View All Leads' }}</a>
+            <a href="/export-leads" target="_blank">{{ language == 'es' and 'Exportar Leads (JSON)' or 'Export Leads (JSON)' }}</a>
+            <a href="/clear-leads" onclick="return confirm('{{ language == 'es' and '¿Estás seguro de que quieres borrar todos los leads?' or 'Are you sure you want to clear all leads?' }}')">{{ language == 'es' and 'Borrar Todos los Leads' or 'Clear All Leads' }}</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleCustomUrl() {
+            var scrapeType = document.getElementById('scrape_type').value;
+            var customUrlGroup = document.getElementById('custom_url_group');
+
+            if (scrapeType === 'custom_url') {
+                customUrlGroup.style.display = 'block';
+                document.getElementById('custom_url').required = true;
+            } else {
+                customUrlGroup.style.display = 'none';
+                document.getElementById('custom_url').required = false;
+            }
+        }
+
+        document.getElementById('scrapeForm').addEventListener('submit', function(e) {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').style.display = 'block';
+
+            // Disable the submit button to prevent multiple submissions
+            document.getElementById('submitButton').disabled = true;
+        });
+    </script>
+</body>
+</html>

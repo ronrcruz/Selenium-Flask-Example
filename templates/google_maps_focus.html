@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ language == 'es' and 'Generador de Leads con Google Maps | Mayoristas de Dispositivos Móviles' or 'Google Maps Lead Generator | Mobile Device Wholesale' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .google-logo {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .google-logo img {
+            height: 40px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2b72e6;
+        }
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .actions a {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .description {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #4285F4;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #4285F4;
+        }
+        .feature-item h3 {
+            margin-top: 0;
+            color: #4285F4;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .language-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .language-toggle a {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .language-toggle a.active {
+            background-color: #4285F4;
+            color: white;
+        }
+        /* Loading overlay */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            z-index: 1000;
+            text-align: center;
+            padding-top: 150px;
+        }
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 30px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            font-size: 24px;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .loading-subtext {
+            font-size: 16px;
+            color: #7f8c8d;
+            max-width: 80%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loader"></div>
+        <div class="loading-text">{{ language == 'es' and 'Buscando Leads de Negocio...' or 'Searching for Business Leads...' }}</div>
+        <div class="loading-subtext">{{ language == 'es' and 'Esto puede tardar hasta 2 minutos. Por favor, no cierres esta ventana.' or 'This may take up to 2 minutes. Please do not close this window.' }}</div>
+    </div>
+
+    <!-- Language toggle -->
+    <div class="language-toggle">
+        <a href="/set-language/en" class="{{ language == 'en' and 'active' or '' }}">English</a>
+        <a href="/set-language/es" class="{{ language == 'es' and 'active' or '' }}">Español</a>
+    </div>
+
+    <div class="container">
+        <h1>{{ language == 'es' and 'Generador de Leads con Google Maps' or 'Google Maps Lead Generator' }}</h1>
+        <div class="google-logo">
+            <span style="color:#4285F4;font-size:24px;font-weight:bold;">G</span>
+            <span style="color:#EA4335;font-size:24px;font-weight:bold;">o</span>
+            <span style="color:#FBBC05;font-size:24px;font-weight:bold;">o</span>
+            <span style="color:#4285F4;font-size:24px;font-weight:bold;">g</span>
+            <span style="color:#34A853;font-size:24px;font-weight:bold;">l</span>
+            <span style="color:#EA4335;font-size:24px;font-weight:bold;">e</span>
+            <span style="color:#777;font-size:24px;font-weight:bold;"> Maps</span>
+            <span style="color:#4285F4;font-size:24px;font-weight:bold;"> {{ language == 'es' and 'Enfocado' or 'Focus' }}</span>
+        </div>
+
+        <div class="description">
+            {% if language == 'es' %}
+            <p>Nuestro rastreador de Google Maps está específicamente optimizado para encontrar mayoristas y distribuidores de dispositivos móviles en América Latina. Esta herramienta especializada utiliza múltiples consultas de búsqueda en español para encontrar los leads más relevantes.</p>
+            {% else %}
+            <p>Our Google Maps scraper is specifically optimized for finding mobile device wholesalers and distributors in Latin America. This specialized tool uses multiple search queries in Spanish to find the most relevant leads.</p>
+            {% endif %}
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>{% if language == 'es' %}Múltiples Consultas en Español{% else %}Multiple Spanish Queries{% endif %}</h3>
+                <p>{% if language == 'es' %}Utiliza términos de búsqueda en español para encontrar más leads relevantes{% else %}Uses Spanish search terms to find more relevant leads{% endif %}</p>
+            </div>
+            <div class="feature-item">
+                <h3>{% if language == 'es' %}Información Detallada{% else %}Detailed Information{% endif %}</h3>
+                <p>{% if language == 'es' %}Extrae nombres de negocios, direcciones, números de teléfono y sitios web{% else %}Extracts business names, addresses, phone numbers, and websites{% endif %}</p>
+            </div>
+            <div class="feature-item">
+                <h3>{% if language == 'es' %}Detección Inteligente{% else %}Smart Detection{% endif %}</h3>
+                <p>{% if language == 'es' %}Medidas mejoradas anti-detección para resultados más confiables{% else %}Enhanced anti-detection measures for more reliable results{% endif %}</p>
+            </div>
+            <div class="feature-item">
+                <h3>{% if language == 'es' %}Eliminación de Duplicados{% else %}Duplicate Removal{% endif %}</h3>
+                <p>{% if language == 'es' %}Elimina automáticamente entradas de negocios duplicadas{% else %}Automatically removes duplicate business entries{% endif %}</p>
+            </div>
+        </div>
+
+        <form id="scrapeForm" action="/scrape" method="post">
+            <input type="hidden" name="scrape_type" value="google_maps_only">
+
+            <div class="form-group">
+                <label for="country">{% if language == 'es' %}País Objetivo:{% else %}Target Country:{% endif %}</label>
+                <select name="country" id="country" required>
+                    {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" id="submitButton">{% if language == 'es' %}Generar Leads de Google Maps{% else %}Generate Google Maps Leads{% endif %}</button>
+        </form>
+
+        <div class="actions">
+            <a href="/view-leads">{% if language == 'es' %}Ver Todos los Leads{% else %}View All Leads{% endif %}</a>
+            <a href="/export-leads" target="_blank">{% if language == 'es' %}Exportar Leads (JSON){% else %}Export Leads (JSON){% endif %}</a>
+            <a href="/clear-leads" onclick="return confirm('{% if language == 'es' %}¿Estás seguro de que quieres borrar todos los leads?{% else %}Are you sure you want to clear all leads?{% endif %}')">{% if language == 'es' %}Borrar Todos los Leads{% else %}Clear All Leads{% endif %}</a>
+        </div>
+
+        <a href="/" class="back-link">{% if language == 'es' %}← Volver al generador principal{% else %}← Back to main lead generator{% endif %}</a>
+    </div>
+
+    <script>
+        document.getElementById('scrapeForm').addEventListener('submit', function(e) {
+            // Show loading overlay
+            document.getElementById('loadingOverlay').style.display = 'block';
+
+            // Disable the submit button to prevent multiple submissions
+            document.getElementById('submitButton').disabled = true;
+        });
+    </script>
+</body>
+</html>
